@@ -27,5 +27,6 @@ kotlin {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation deps.support.compat
+    implementation deps.kotlin.stdLibJre8
+    implementation deps.kotlin.coroutines
 }

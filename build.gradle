@@ -2,7 +2,7 @@
 
 buildscript {
     ext.versions = [
-            'minSdk'          : 24,
+            'minSdk'          : 16,
             'compileSdk'      : 24,
             'targetSdk'       : 24,
             'buildTools'      : '26.0.0',
@@ -14,27 +14,35 @@ buildscript {
             'kotlinCoroutines': '0.16',
             'supportLibrary'  : '25.4.0',
             'constraintLayout': '1.0.2',
+            'firebase'        : '10.2.4',
+            'gmsGradle'       : '3.1.0',
     ]
     ext.deps = [
-            android  : [
+            android   : [
                     'gradlePlugin': "com.android.tools.build:gradle:${versions.androidPlugin}",
                     'things'      : "com.google.android.things:androidthings:${versions.androidThings}",
             ],
-            things   : [
+            things    : [
                     'lib'       : "com.google.android.things:androidthings:${versions.androidThings}",
                     'rainbowhat': "com.google.android.things.contrib:driver-rainbowhat:${versions.rainbowhat}",
             ],
-            'support': [
+            'support' : [
                     'appcompat'       : "com.android.support:appcompat-v7:${versions.supportLibrary}",
                     'compat'          : "com.android.support:support-compat:${versions.supportLibrary}",
                     'annotations'     : "com.android.support:support-annotations:${versions.supportLibrary}",
                     'constraintLayout': "com.android.support.constraint:constraint-layout:${versions.constraintLayout}"
             ],
-            'kotlin' : [
+            'kotlin'  : [
                     'gradlePlugin': "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin",
                     'stdLibJre8'  : "org.jetbrains.kotlin:kotlin-stdlib-jre8:${versions.kotlin}",
                     'coroutines'  : "org.jetbrains.kotlinx:kotlinx-coroutines-core:${versions.kotlinCoroutines}",
-            ]
+            ],
+            'firebase': [
+                    'database': "com.google.firebase:firebase-database:${versions.firebase}",
+            ],
+            gms       : [
+                    'gradlePlugin': "com.google.gms:google-services:${versions.gmsGradle}",
+            ],
     ]
     repositories {
         google()
@@ -43,6 +51,7 @@ buildscript {
     dependencies {
         classpath deps.android.gradlePlugin
         classpath deps.kotlin.gradlePlugin
+        classpath deps.gms.gradlePlugin
     }
 }
 

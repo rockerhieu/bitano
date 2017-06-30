@@ -1,4 +1,4 @@
-package io.github.rockerhieu.duet
+package io.github.rockerhieu.mono
 
 import android.app.Activity
 import android.content.Context
@@ -15,9 +15,10 @@ import com.google.android.things.contrib.driver.bmx280.Bmx280
 import com.google.android.things.contrib.driver.button.Button
 import com.google.android.things.contrib.driver.ht16k33.AlphanumericDisplay
 import com.google.android.things.contrib.driver.ht16k33.Ht16k33
-import com.google.android.things.contrib.driver.pwmspeaker.Speaker
 import com.google.android.things.contrib.driver.rainbowhat.RainbowHat
-import io.github.rockerhieu.duet.instrument.Piano8bit
+import com.google.firebase.database.*
+import io.github.rockerhieu.duet.instrument.Bitano
+import io.github.rockerhieu.duet.instrument.Note
 import io.github.rockerhieu.duet.instrument.Song
 
 
@@ -40,13 +41,16 @@ import io.github.rockerhieu.duet.instrument.Song
  *
  * @see <a href="https://github.com/androidthings/contrib-drivers#readme">https://github.com/androidthings/contrib-drivers#readme</a>
  */
-class MainActivity : Activity(), Button.OnButtonEventListener {
+class MainActivity : Activity(), Button.OnButtonEventListener, ChildEventListener by DefaultChildEventListener() {
     val TAG = "Main"
 
+    val database = FirebaseDatabase.getInstance()
+    val offsetRef = FirebaseDatabase.getInstance().getReference(".info/serverTimeOffset")
+    val notesRef = database.getReference("notes")
     val sensor: Bmx280 by lazy { RainbowHat.openSensor() }
     val segment: AlphanumericDisplay by lazy { RainbowHat.openDisplay() }
     val ledstrip: Apa102 by lazy { RainbowHat.openLedStrip() }
-    val speaker: Speaker by lazy { RainbowHat.openPiezo() }
+    val speaker: Sbiter by lazy { Sbiter(RainbowHat.openPiezo()) }
     val sensorManager: SensorManager by lazy { getSystemService(Context.SENSOR_SERVICE) as SensorManager }
     val temperatureEventListener: SensorEventListener by lazy {
         object : SensorEventListener {
@@ -75,7 +79,7 @@ class MainActivity : Activity(), Button.OnButtonEventListener {
             }
         }
     }
-    val piano: Piano8bit by lazy { Piano8bit(speaker) }
+    val bitano: Bitano by lazy { Bitano(speaker) }
     val buttonA: Button by lazy { RainbowHat.openButtonA() }
     val buttonB: Button by lazy { RainbowHat.openButtonB() }
     val buttonC: Button by lazy { RainbowHat.openButtonC() }
@@ -95,6 +99,22 @@ class MainActivity : Activity(), Button.OnButtonEventListener {
         buttonA.setOnButtonEventListener(this)
         buttonB.setOnButtonEventListener(this)
         buttonC.setOnButtonEventListener(this)
+        offsetRef.addListenerForSingleValueEvent(
+                object : ValueEventListener {
+                    override fun onCancelled(e: DatabaseError?) {
+                    }
+
+                    override fun onDataChange(data: DataSnapshot) {
+                        val offset = data.getValue(Double::class.java)
+                        val estimatedServerTimeMs = System.currentTimeMillis() + offset
+                        watchForNotes(estimatedServerTimeMs)
+                    }
+                }
+        )
+    }
+
+    private fun watchForNotes(estimatedServerTimeMs: Double) {
+        notesRef.startAt(estimatedServerTimeMs).addChildEventListener(this)
     }
 
     override fun onDestroy() {
@@ -103,7 +123,7 @@ class MainActivity : Activity(), Button.OnButtonEventListener {
         speaker.close()
         segment.close()
         sensor.close()
-        piano.close()
+        bitano.close()
         ledstrip.close()
         buttonA.close()
         buttonB.close()
@@ -111,11 +131,19 @@ class MainActivity : Activity(), Button.OnButtonEventListener {
         super.onDestroy()
     }
 
+    override fun onChildAdded(data: DataSnapshot, previousChildName: String?) {
+        Log.d(TAG, "onChildAdded: ${data.value}")
+        val note = Note.parse("2${data.value}")
+        if (note != null)
+        // bitano.queue(note)
+            bitano.play(note, { segment.display(it.label) })
+    }
+
     override fun onButtonEvent(button: Button, pressed: Boolean) {
         when (button) {
             buttonA -> if (!pressed) lightstripOn(Color.BLUE) else lightstripOff()
             buttonB -> if (!pressed) rainbow() else lightstripOff()
-            buttonC -> if (!pressed) piano.play(Song.CHAU_LEN_3) else speaker.stop()
+            buttonC -> if (!pressed) bitano.play(Song.CHAU_LEN_3) else speaker.stop()
         }
     }
 

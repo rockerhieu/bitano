@@ -7,7 +7,7 @@ android {
     buildToolsVersion versions.buildTools
 
     defaultConfig {
-        applicationId "io.github.rockerhieu.mono"
+        applicationId "io.github.rockerhieu.duet"
         minSdkVersion versions.minSdk
         targetSdkVersion versions.targetSdk
         versionCode 1
@@ -28,8 +28,13 @@ kotlin {
 }
 
 dependencies {
+    implementation project(':library')
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation deps.kotlin.stdLibJre8
+    implementation deps.kotlin.coroutines
     implementation deps.support.appcompat
     implementation deps.support.constraintLayout
+    implementation deps.firebase.database
 }
+
+apply plugin: 'com.google.gms.google-services'

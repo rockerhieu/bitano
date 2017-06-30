@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="io.github.rockerhieu.duet">
+    package="io.github.rockerhieu.mono">
 
     <application>
         <uses-library android:name="com.google.android.things" />
 
-        <activity android:name="io.github.rockerhieu.duet.MainActivity">
+        <activity android:name="io.github.rockerhieu.mono.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

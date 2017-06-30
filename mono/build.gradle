@@ -5,9 +5,9 @@ android {
     compileSdkVersion versions.compileSdk
     buildToolsVersion versions.buildTools
     defaultConfig {
-        applicationId "io.github.rockerhieu.duet"
-        minSdkVersion versions.minSdk
-        targetSdkVersion versions.targetSdk
+        applicationId "io.github.rockerhieu.mono"
+        minSdkVersion 24
+        targetSdkVersion 24
         versionCode 1
         versionName "1.0"
     }
@@ -26,9 +26,13 @@ kotlin {
 }
 
 dependencies {
+    implementation project(':library')
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     compileOnly deps.things.lib
     implementation deps.things.rainbowhat
     implementation deps.kotlin.stdLibJre8
     implementation deps.kotlin.coroutines
+    implementation deps.firebase.database
 }
+
+apply plugin: 'com.google.gms.google-services'

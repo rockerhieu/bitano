@@ -1,5 +1,6 @@
 package io.github.rockerhieu.duet.instrument
 
+import java.util.*
 import java.util.regex.Pattern
 
 /**
@@ -14,7 +15,7 @@ data class Note(val label: String, val frequency: Double, val duration: Int) {
             var time = if (matcher.find()) Integer.parseInt(matcher.group(1)) else 4
             time = time * 1000 / 8
             if (matcher.matches()) {
-                val key = matcher.group(2)
+                val key = matcher.group(2).toUpperCase(Locale.US)
                 if (NOTES.containsKey(key)) return Note(key, NOTES[key]!!, time)
             }
             return null

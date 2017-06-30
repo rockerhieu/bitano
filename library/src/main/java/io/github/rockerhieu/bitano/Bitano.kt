@@ -1,6 +1,6 @@
 package io.github.rockerhieu.duet.instrument
 
-import com.google.android.things.contrib.driver.pwmspeaker.Speaker
+import io.github.rockerhieu.bitano.Speaker
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.delay
@@ -9,7 +9,7 @@ import java.util.concurrent.LinkedBlockingQueue
 /**
  * Created by rockerhieu on 6/29/17.
  */
-class Piano8bit(val speaker: Speaker) {
+class Bitano(val speaker: Speaker) {
     val queue = LinkedBlockingQueue<Note>()
     var closed = false
 
@@ -31,9 +31,15 @@ class Piano8bit(val speaker: Speaker) {
         closed = true
     }
 
-    fun play(note: Note) {
+    fun queue(note: Note) {
+        ensureNotClosed()
+        queue.add(note)
+    }
+
+    fun play(note: Note, callback: ((Note) -> Unit)? = null) {
         ensureNotClosed()
         synchronized(speaker, {
+            callback?.invoke(note)
             speaker.play(note.frequency)
             Thread.sleep(note.duration.toLong())
             speaker.stop()
