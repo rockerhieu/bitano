@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "429126914798",
+    "firebase_url": "https://mono-f05a6.firebaseio.com",
+    "project_id": "mono-f05a6",
+    "storage_bucket": "mono-f05a6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:429126914798:android:854e8fc5fb184d39",
+        "android_client_info": {
+          "package_name": "io.github.rockerhieu.okita"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "429126914798-2v2tas6h2ghevddloagjvns295u4hsbt.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "io.github.rockerhieu.okita",
+            "certificate_hash": "a28af23f2c551a3a4ee0eaebb0a641cf19162a8c"
+          }
+        },
+        {
+          "client_id": "429126914798-7mrj2a032gsk18sd24akjkk982tmmq53.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQkjdaB-T8r1qSIoWYQl81ZbP1uNU6X1U"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "429126914798-7mrj2a032gsk18sd24akjkk982tmmq53.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

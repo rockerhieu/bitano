@@ -1,0 +1,58 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+buildscript {
+    ext.versions = [
+            'minSdk'          : 24,
+            'compileSdk'      : 24,
+            'targetSdk'       : 24,
+            'buildTools'      : '26.0.0',
+
+            'androidPlugin'   : '3.0.0-alpha4',
+            'androidThings'   : '0.4.1-devpreview',
+            'rainbowhat'      : '0.4',
+            'kotlin'          : '1.1.3',
+            'kotlinCoroutines': '0.16',
+            'supportLibrary'  : '25.4.0',
+            'constraintLayout': '1.0.2',
+    ]
+    ext.deps = [
+            android  : [
+                    'gradlePlugin': "com.android.tools.build:gradle:${versions.androidPlugin}",
+                    'things'      : "com.google.android.things:androidthings:${versions.androidThings}",
+            ],
+            things   : [
+                    'lib'       : "com.google.android.things:androidthings:${versions.androidThings}",
+                    'rainbowhat': "com.google.android.things.contrib:driver-rainbowhat:${versions.rainbowhat}",
+            ],
+            'support': [
+                    'appcompat'       : "com.android.support:appcompat-v7:${versions.supportLibrary}",
+                    'compat'          : "com.android.support:support-compat:${versions.supportLibrary}",
+                    'annotations'     : "com.android.support:support-annotations:${versions.supportLibrary}",
+                    'constraintLayout': "com.android.support.constraint:constraint-layout:${versions.constraintLayout}"
+            ],
+            'kotlin' : [
+                    'gradlePlugin': "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin",
+                    'stdLibJre8'  : "org.jetbrains.kotlin:kotlin-stdlib-jre8:${versions.kotlin}",
+                    'coroutines'  : "org.jetbrains.kotlinx:kotlinx-coroutines-core:${versions.kotlinCoroutines}",
+            ]
+    ]
+    repositories {
+        google()
+        jcenter()
+    }
+    dependencies {
+        classpath deps.android.gradlePlugin
+        classpath deps.kotlin.gradlePlugin
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        jcenter()
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
