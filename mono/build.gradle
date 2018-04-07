@@ -2,37 +2,38 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion versions.compileSdk
-    buildToolsVersion versions.buildTools
-    defaultConfig {
-        applicationId "io.github.rockerhieu.mono"
-        minSdkVersion 24
-        targetSdkVersion 24
-        versionCode 1
-        versionName "1.0"
+  compileSdkVersion versions.compileSdk
+  defaultConfig {
+    applicationId "io.github.rockerhieu.mono"
+    minSdkVersion versions.minSdk
+    targetSdkVersion versions.targetSdk
+    versionCode 1
+    versionName "1.0"
+  }
+  buildTypes {
+    release {
+      minifyEnabled false
+      proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
     }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
+  }
 }
 
 kotlin {
-    experimental {
-        coroutines 'enable'
-    }
+  experimental {
+    coroutines 'enable'
+  }
 }
 
 dependencies {
-    implementation project(':library')
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    compileOnly deps.things.lib
-    implementation deps.things.rainbowhat
-    implementation deps.kotlin.stdLibJre8
-    implementation deps.kotlin.coroutines
-    implementation deps.firebase.database
+  implementation project(':library')
+  implementation fileTree(dir: 'libs', include: ['*.jar'])
+  compileOnly deps.things.lib
+  implementation deps.things.rainbowhat
+  implementation deps.firebase.database
+  implementation deps.firebase.storage
+  implementation deps.okhttp.core
+  implementation deps.picasso
+  implementation deps.coroutines.android
 }
 
 apply plugin: 'com.google.gms.google-services'

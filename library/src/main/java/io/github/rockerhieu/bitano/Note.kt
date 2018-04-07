@@ -1,6 +1,7 @@
 package io.github.rockerhieu.duet.instrument
 
-import java.util.*
+import java.util.HashMap
+import java.util.Locale
 import java.util.regex.Pattern
 
 /**
@@ -8,9 +9,11 @@ import java.util.regex.Pattern
  */
 data class Note(val label: String, val frequency: Double, val duration: Int) {
     companion object {
-        @JvmStatic private val pattern = Pattern.compile("(\\d+)(\\w#?\\d*)")!!
+        @JvmStatic
+        private val pattern = Pattern.compile("(\\d+)(\\w#?\\d*)")!!
 
-        @JvmStatic fun parse(note: String): Note? {
+        @JvmStatic
+        fun parse(note: String): Note? {
             val matcher = pattern.matcher(note)
             var time = if (matcher.find()) Integer.parseInt(matcher.group(1)) else 4
             time = time * 1000 / 8
@@ -21,7 +24,8 @@ data class Note(val label: String, val frequency: Double, val duration: Int) {
             return null
         }
 
-        @JvmStatic val NOTES: HashMap<String, Double> = hashMapOf(
+        @JvmStatic
+        val NOTES: HashMap<String, Double> = hashMapOf(
                 "C-" to 8.176, "G#1" to 51.913, "E4" to 329.63, "C7" to 2093.0,
                 "C#-" to 8.662, "A1" to 55.000, "F4" to 349.23, "C#7" to 2217.5,
                 "D-" to 9.177, "A#1" to 58.270, "F#4" to 369.99, "D7" to 2349.3,

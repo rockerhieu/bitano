@@ -1,34 +1,34 @@
 package io.github.rockerhieu.duet.instrument
 
 import io.github.rockerhieu.bitano.Speaker
-import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.delay
+import kotlinx.coroutines.experimental.newSingleThreadContext
+import java.io.Closeable
 import java.util.concurrent.LinkedBlockingQueue
+import java.util.concurrent.atomic.AtomicBoolean
 
 /**
  * Created by rockerhieu on 6/29/17.
  */
-class Bitano(val speaker: Speaker) {
+typealias NotePlayCallback = (Note) -> Unit
+
+typealias NoteStopCallback = () -> Unit
+
+class Bitano(val speaker: Speaker,
+        val playCallback: NotePlayCallback? = null,
+        val stopCallback: NoteStopCallback? = null) : Closeable {
     val queue = LinkedBlockingQueue<Note>()
-    var closed = false
+    var closed = AtomicBoolean()
 
     init {
-        async(CommonPool) {
-            while (!closed) {
-                while (!closed && queue.isEmpty()) {
-                    delay(50)
-                }
-                while (!closed && !queue.isEmpty()) {
-                    play(queue.take())
-                }
-            }
+        async(newSingleThreadContext("BitanoPlayer")) {
+            while (!closed.get()) play(queue.take())
         }
     }
 
-    fun close() {
+    override fun close() {
         speaker.close()
-        closed = true
+        closed.set(true)
     }
 
     fun queue(note: Note) {
@@ -36,14 +36,21 @@ class Bitano(val speaker: Speaker) {
         queue.add(note)
     }
 
-    fun play(note: Note, callback: ((Note) -> Unit)? = null) {
+    fun play(note: Note) {
         ensureNotClosed()
         synchronized(speaker, {
-            callback?.invoke(note)
+            playCallback?.invoke(note)
             speaker.play(note.frequency)
             Thread.sleep(note.duration.toLong())
             speaker.stop()
+            stopCallback?.invoke()
         })
+    }
+
+    fun stop() {
+        ensureNotClosed()
+        queue.clear()
+        speaker.stop()
     }
 
     fun play(song: Song, immediate: Boolean = true) {
@@ -56,7 +63,7 @@ class Bitano(val speaker: Speaker) {
         frequencies.mapNotNullTo(queue) { Note.parse(it) }
     }
 
-    fun ensureNotClosed() {
-        if (closed) throw IllegalStateException("Piano8bit is closed")
+    private fun ensureNotClosed() {
+        if (closed.get()) throw IllegalStateException("Bitano is closed")
     }
 }

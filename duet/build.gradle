@@ -3,38 +3,36 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion versions.compileSdk
-    buildToolsVersion versions.buildTools
+  compileSdkVersion versions.compileSdk
 
-    defaultConfig {
-        applicationId "io.github.rockerhieu.duet"
-        minSdkVersion versions.minSdk
-        targetSdkVersion versions.targetSdk
-        versionCode 1
-        versionName "1.0"
+  defaultConfig {
+    applicationId "io.github.rockerhieu.duet"
+    minSdkVersion versions.minSdk
+    targetSdkVersion versions.targetSdk
+    versionCode 1
+    versionName "1.0"
+  }
+  buildTypes {
+    release {
+      minifyEnabled false
+      proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
     }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
+  }
 }
 
 kotlin {
-    experimental {
-        coroutines 'enable'
-    }
+  experimental {
+    coroutines 'enable'
+  }
 }
 
 dependencies {
-    implementation project(':library')
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation deps.kotlin.stdLibJre8
-    implementation deps.kotlin.coroutines
-    implementation deps.support.appcompat
-    implementation deps.support.constraintLayout
-    implementation deps.firebase.database
+  implementation project(':library')
+  implementation fileTree(dir: 'libs', include: ['*.jar'])
+  implementation deps.support.appcompat
+  implementation deps.support.constraintLayout
+  implementation deps.firebase.database
+  implementation deps.picasso
 }
 
 apply plugin: 'com.google.gms.google-services'
